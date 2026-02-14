@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walentynka</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #e91e63;
+            font-size: 28px;
+            margin-bottom: 30px;
+            font-weight: bold;
+            min-height: 40px;
+        }
+
+        .image-placeholder {
+            width: 200px;
+            height: 200px;
+            background: url('https://media.tenor.com/LGXVwQg0cb0AAAAM/%EB%AA%A8%EC%B0%8C%EB%83%A5.gif') no-repeat center center;
+            background-size: cover;
+            border-radius: 15px;
+            margin: 0 auto 30px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-yes {
+            background: #4caf50;
+            color: white;
+            flex: 1;
+            max-width: 150px;
+        }
+
+        .btn-yes:hover {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .btn-no {
+            background: #f44336;
+            color: white;
+            flex: 1;
+            max-width: 150px;
+        }
+
+        .btn-no:hover {
+            background: #da190b;
+        }
+
+        .success-message {
+            display: none;
+            margin-top: 30px;
+            font-size: 24px;
+            color: #e91e63;
+            font-weight: bold;
+            animation: bounce 0.5s ease-in-out;
+        }
+
+        .hearts {
+            position: fixed;
+            font-size: 40px;
+            pointer-events: none;
+            animation: fall 3s ease-in forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="questionText">Czy zostaniesz moją walentynką?</h1>
+        
+        <div class="image-placeholder"></div>
+        <img id="kissImage" class="hidden" src="kisskiss.jpg" alt="Kiss" style="width: 200px; height: 200px; border-radius: 15px; margin: 0 auto 30px;"/>
+
+        <div class="buttons">
+            <button class="btn-yes" onclick="sayYes()">TAK</button>
+            <button class="btn-no" id="noBtn" onclick="sayNo()">NIE</button>
+        </div>
+
+        <div class="success-message" id="successMsg">
+            ❤️ Kocham cię bardzooo ❤️
+        </div>
+    </div>
+
+    <script>
+        let noClickCount = 0;
+        const messages = ['Czy zostaniesz moją walentynką?', 'Może jednak...', 'Serio?', 'Proszę...', 'Zmień zdanie!', 'Ostatnia szansa!', 'Naprawdę?', 'Poddajesz się?'];
+
+        function sayYes() {
+            document.getElementById('questionText').textContent = 'Jesteś najwspanialsza! 💕';
+            document.getElementById('successMsg').style.display = 'block';
+            document.getElementById('kissImage').classList.remove('hidden');
+            document.querySelector('.image-placeholder').style.display = 'none'; // Hide the first image
+            document.querySelector('.buttons').style.display = 'none'; // Hide buttons
+            createHearts();
+        }
+
+        function sayNo() {
+            noClickCount++;
+            const yesBtn = document.querySelector('.btn-yes');
+            const noBtn = document.getElementById('noBtn');
+            const questionText = document.getElementById('questionText');
+
+            // Zmniejszaj przycisk NIE
+            const noScale = Math.max(0.3, 1 - (noClickCount * 0.1));
+            noBtn.style.transform = `scale(${noScale})`;
+
+            // Zmienia napis
+            questionText.textContent = messages[Math.min(noClickCount, messages.length - 1)];
+
+            // Po osiągnięciu ostatniej wiadomości, przesuwaj przycisk NIE
+            if (noClickCount >= messages.length - 1) {
+                const randomX = (Math.random() - 0.5) * 200;
+                const randomY = (Math.random() - 0.5) * 100;
+                noBtn.style.transform += ` translate(${randomX}px, ${randomY}px)`;
+            }
+
+            // Powiększaj przycisk TAK
+            const scale = 1 + (noClickCount * 0.15);
+            yesBtn.style.transform = `scale(${scale})`;
+        }
+
+        function createHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.classList.add('hearts');
+                heart.innerHTML = '❤️';
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.top = '-50px';
+                document.body.appendChild(heart);
+
+                setTimeout(() => heart.remove(), 3000);
+            }, 300);
+        }
+    </script>
+</body>
+</html>
